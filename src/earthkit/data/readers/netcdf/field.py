@@ -221,6 +221,9 @@ class XArrayMetadata(RawMetadata):
     def ls_keys(self):
         return self.LS_KEYS
 
+    def data_format(self):
+        return "netcdf"
+
 
 class XArrayField(Field):
     def __init__(self, ds, variable, slices, non_dim_coords):
@@ -295,6 +298,15 @@ class XArrayField(Field):
 
     def clone(self, **kwargs):
         return ClonedXarrayField(self, **kwargs)
+
+    def to_target(self, *args, **kwargs):
+        raise NotImplementedError
+
+    def _write(self, *args, **kwargs):
+        raise NotImplementedError
+
+    def _encode(self, *args, **kwargs):
+        raise NotImplementedError
 
 
 class ClonedXarrayField(ClonedFieldCore, XArrayField):
