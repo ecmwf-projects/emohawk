@@ -49,27 +49,10 @@ class Validator(metaclass=ABCMeta):
     def explain(self):
         pass
 
-    @staticmethod
-    def make(value):
-        v = _validators.get(type(value), None)
-        if v is not None:
-            return v(value)
-        else:
-            raise TypeError(f"Cannot create Validator for type={type(value)}")
-
-
-class ValueValidator(Validator):
-    def __init__(self, value):
-        self.value = value
-
-    def check(self, value):
-        return value == self.value
-
-    def explain(self):
-        return f"Valid when = {self.value}."
-
 
 class IntervalValidator(Validator):
+    """Check if value is in a valid interval"""
+
     def __init__(self, interval):
         self.interval = interval
 
@@ -80,7 +63,9 @@ class IntervalValidator(Validator):
         return f"Valid when {interval_to_human(self.interval)}."
 
 
-class ListValidator(Validator):
+class ValuesValidator(Validator):
+    """Check if value is in a list of valid values"""
+
     def __init__(self, values):
         self.values = values
 
@@ -89,9 +74,6 @@ class ListValidator(Validator):
 
     def explain(self):
         return f"Valid values: {list_to_human(self.values)}."
-
-
-_validators = {Interval: IntervalValidator, bool: ValueValidator, list: ListValidator}
 
 
 class ConfigOption:
@@ -175,7 +157,7 @@ CONFIG_AND_HELP = {
         "off",
         """Caching policy. {validator}
         See :doc:`/guide/caching` for more information. """,
-        validator=ListValidator(["off", "temporary", "user"]),
+        validator=ValuesValidator(["off", "temporary", "user"]),
     ),
     "use-message-position-index-cache": _(
         False,
@@ -224,13 +206,13 @@ CONFIG_AND_HELP = {
         "persistent",
         """GRIB field management policy for fieldlists with data on disk.  {validator}
         See :doc:`/guide/misc/grib_memory` for more information.""",
-        validator=ListValidator(["persistent", "temporary"]),
+        validator=ValuesValidator(["persistent", "temporary"]),
     ),
     "grib-handle-policy": _(
         "cache",
         """GRIB handle management policy for fieldlists with data on disk.  {validator}
         See :doc:`/guide/misc/grib_memory` for more information.""",
-        validator=ListValidator(["cache", "persistent", "temporary"]),
+        validator=ValuesValidator(["cache", "persistent", "temporary"]),
     ),
     "grib-handle-cache-size": _(
         1,
