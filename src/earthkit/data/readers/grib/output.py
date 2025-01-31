@@ -451,7 +451,8 @@ class GribOutput:
             return self.fileobj, None
 
         if self.split_output:
-            path = self.filename.format(**{k: handle.get(k) for k in self.split_output})
+            keys = {k.split(":")[0]: handle.get(k.split(":")[0]) for k in self.split_output}
+            path = self.filename.format(**keys)
         else:
             path = self.filename
 

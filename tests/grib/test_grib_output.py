@@ -332,6 +332,7 @@ def test_grib_output_field_template(array):
         ("{shortName}", {"t": 2, "u": 2, "v": 2}),
         ("{shortName}_{level}", {"t_1000": 1, "t_850": 1, "u_1000": 1, "u_850": 1, "v_1000": 1, "v_850": 1}),
         ("{date}_{time}_{step}", {"20180801_1200_0": 6}),
+        ("{date}_{time}_{step:03}", {"20180801_1200_000": 6}),
     ],
 )
 def test_grib_output_filename_pattern(pattern, expected_value):
